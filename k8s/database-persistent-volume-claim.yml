@@ -1,0 +1,18 @@
+apiVersion: v1
+
+kind: PersistentVolumeClaim 
+
+metadata: 
+  name: database-persistent-volume-claim 
+
+# all the confid that are specified here -> if we attach the claim to a pod, Kuberbetes has to find an instance of storage that meet this requirement
+spec: 
+  accessModes:
+    # ReadWriteOnce: give the instance of storage could be used at a time by only one node
+    # ReadOnlyMany: multiple node at the same time could be read info from the storage instance
+    # ReadWriteMany: multiple node at the same time could be read and write info from the storage instance
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 2Gi
+  # other possible options, eg. storageClassName

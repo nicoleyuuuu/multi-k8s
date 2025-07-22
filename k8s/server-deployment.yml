@@ -1,0 +1,45 @@
+
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: server-deployment
+spec: 
+  replicas: 3
+  selector: 
+    matchLabels:
+      component: server
+  template:
+  # config of each pod maintained by the deployment
+    metadata:
+      labels:
+        component: server
+    spec:
+      containers: 
+        - name: server
+          image: yingtingyu33/multi-server
+          # image: stephengrider/multi-client
+          ports:
+            - containerPort: 5000
+          env: 
+            - name: REDIS_HOST 
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT 
+              value: '6379'
+            - name: PGUSER 
+              value: postgres
+            - name: PGHOST 
+              value: postgres-cluster-ip-service
+            - name: PGPORT 
+              # has to be string rather than int
+              value: '5432'
+            - name: PGDATABASE 
+              value: postgres
+            # the name of the PW env doesn't related to the secret, it could be anything like MYPW
+            - name: PGPASSWORD
+              valueFrom: 
+                # name and key specified in the command when creating the secrete 
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
+            

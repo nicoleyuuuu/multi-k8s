@@ -1,0 +1,29 @@
+
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: worker-deployment
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels:
+      component: worker
+  template:
+  # config of each pod maintained by the deployment
+    metadata:
+      labels:
+        component: worker
+    spec:
+      containers: 
+        - name: worker
+          image: yingtingyu33/multi-worker
+          # image: stephengrider/multi-client
+          env: 
+            # tell the object about how to connect to another object
+            - name: REDIS_HOST
+              # host name of the clusterIP of redis
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              # the port is specified in the clusterIP of redis
+              value: '6379'

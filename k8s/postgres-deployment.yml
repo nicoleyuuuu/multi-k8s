@@ -1,0 +1,47 @@
+
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels:
+      component: postgres
+  template:
+  # config of each pod maintained by the deployment
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      volumes:
+          # allocate the storage
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim
+          
+      containers: 
+      # assign the storage in use to the container
+        - name: postgres
+          image: postgres
+          # image: stephengrider/multi-client
+          ports:
+            - containerPort: 5432
+          volumeMounts: 
+              # volume_name = volumn_mount_name -> ask Kunbernetes to find some storage
+            - name: postgres-storage
+              # specify where inside the container this storage should be available
+              # input folder reference here 
+              # anything in the container that is stored in that folder will be actually stored in the volume
+              # the dir that postgres to store data
+              mountPath: /var/lib/postgresql/data 
+              # subpath: any data that are stored inside the mountpath should be stored inside the subpath of the volume
+              subPath: postgres
+          env:
+            # overwrite the default password
+            - name: POSTGRES_PASSWORD 
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD

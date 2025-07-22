@@ -1,0 +1,17 @@
+
+apiVersion: v1
+
+kind: Service
+metadata:
+  # host name of the service that other pod could connect to 
+  name: redis-cluster-ip-service
+spec: 
+  type: ClusterIP
+  selector: 
+    component: redis
+  ports:
+    # port: how other object/property inside the node to access the target pbject that we are setting up access
+    # target port: port on the target pod(the object) that we are providing access to
+    # other object -> access port of the service -> target port of the service -> access the object
+    - port: 6379
+      targetPort: 6379
