@@ -3,6 +3,13 @@ dist: focal
 services:
   - docker
 
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    # tell google cloud cli to make sure it's not displaying any prompt that requires user input
+    
+    - CLOUDSDK_CORE_DISABLE_PROMPT=1
+
 before_install:
   - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
   # download google dsk, install it locally in an instance that is assigned to us by travis CI
@@ -19,3 +26,24 @@ before_install:
   # step3: encrypt and upload the json file to travis account
   # step4: in the travis.yml, add code to unencrpt the json file and load it to GC SDK
   - gcloud auth activate-service-account --key-file service-account.json
+  # tell what project, cluster and in what zone we want to use
+  - gcloud config set project multi-k8s-466705
+  - gcloud config set compute/zone northamerica-northeast2-a
+  - gcloud container clusters get-credentials multi-cluster
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  # build the test version of multi-client
+  - docker build -t yingtingyu33/react-test -f ./client/Docker.dev ./client
+
+script:
+  # run test
+  - docker run -e CI=true yingtingyu33/react-test npm test
+
+deploy: 
+  # run the script file, since the deployment code will be in the script file
+  provider: script 
+  # in the script, we are going to have commands to build and tag the images and push it to docker hub
+  # apply all config in the k8s folder
+  # imperatively set latest images on each deployment
+  script: bash ./deploy.sh
+  on:
+    branch: master
