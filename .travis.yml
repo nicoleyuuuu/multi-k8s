@@ -19,7 +19,7 @@ before_install:
   # it basically means, there is some config that are going to modify our shell within travis CI inside this file
   # and it's going to apply the config through the source command
   - source $HOME/google-cloud-sdk/path.bash.inc
-  - gcloud components update kubectl 
+  - gcloud components update kubectl  --quiet
   # in order to access gc
   # ask google to activate a service account, and provide the credentials in service-account.json
   # step1: download the service account credential in a json file
