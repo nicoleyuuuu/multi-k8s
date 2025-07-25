@@ -33,7 +33,7 @@ before_install:
   - gcloud container clusters get-credentials multi-cluster
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   # build the test version of multi-client
-  - docker build -t yingtingyu33/react-test -f ./client/Docker.dev ./client
+  - docker build -t yingtingyu33/react-test -f ./client/Dockerfile.dev ./client
 
 script:
   # run test
