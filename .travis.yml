@@ -12,8 +12,8 @@ env:
 before_install:
   - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
   # download google dsk, install it locally in an instance that is assigned to us by travis CI
-  # - curl https://sdk.cloud.google.com | bash > /dev/null;
-  - curl -sSL https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-468.0.0-linux-x86_64.tar.gz | tar -xz
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  # - curl -sSL https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-468.0.0-linux-x86_64.tar.gz | tar -xz
   # - ./google-cloud-sdk/install.sh --quiet
   # look at the default install dir of the google cloud sdk, and source the file path bash inc
   # it basically means, there is some config that are going to modify our shell within travis CI inside this file
